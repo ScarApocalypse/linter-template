@@ -1,4 +1,3 @@
-
 ### 从零构建前端 Lint 工作流
 
 + eslint prettier stylelint husky lint-staged typescript eslint-config-alloy 
@@ -26,7 +25,7 @@
 2、安装依赖`npm install --save-dev eslint babel-eslint eslint-config-alloy`
 3、在项目根目录下创建一个`.eslintrc.js` 或 `.eslintrc.json`的配置文件：
 
-``` js
+```js
 // .eslintrc.js
 module.exports = {
     extends: [
@@ -44,7 +43,7 @@ console.log(`My name is ${myNane}`);
 
 5、在命令行输入npx eslint index.js
 
-```shell
+```cmd
 // eslint 报错信息：
 ✖ 2 problems (2 errors, 0 warnings)
 error  Unexpected var, use let or const instead  no-var
@@ -53,7 +52,7 @@ error  'myNane' is not defined                   no-undef
 
 6、使用`npx eslint index.js --fix`自动修复某些规则
 
-```shell
+```cmd
 // 这时 var 变成了 let
 // 还剩下一个无法自动修复的错误
 ✖ 1 problem (1 error, 0 warnings)
@@ -64,16 +63,19 @@ error  'myNane' is not defined  no-undef
 
 1、由于 ESLint 默认使用 Espree 进行语法解析，无法识别 TypeScript 的一些语法，故我们需要安装 @typescript-eslint/parser，替代掉默认的解析器，别忘了同时安装 typescript：
 
-```shell
+```cmd
 npm install --save-dev typescript @typescript-eslint/parser
 ```
 
 2、接下来需要安装对应的插件 @typescript-eslint/eslint-plugin 它作为 eslint 默认规则的补充，提供了一些额外的适用于 ts 语法的规则。
-```shell
+
+```cmd
 npm install --save-dev @typescript-eslint/eslint-plugin
 ```
+
 3、修改配置文件
-```
+
+```js
 module.exports = {
     extends: [
         'alloy',
@@ -91,9 +93,11 @@ module.exports = {
     }
 }
 ```
+
 + 以上配置中，我们自定义了两个规则，其中 no-var是 ESLint 原生的规则（我们刚刚已经用到了这个规则，它被包含在alloy中，此处会覆盖），@typescript-eslint/consistent-type-definitions 是 @typescript-eslint/eslint-plugin 新增的规则
 + 规则的取值一般是一个数组（上例中的 @typescript-eslint/consistent-type-definitions），其中第一项是 off、warn 或 error 中的一个，表示关闭、警告和报错。后面的项都是该规则的其他配置。
 + 如果没有其他配置的话，则可以将规则的取值简写为数组中的第一项（上例中的 no-var）。
+
 > 关闭、警告和报错的含义如下：
 
 + 关闭：禁用此规则
@@ -101,14 +105,17 @@ module.exports = {
 + 报错：发现错误时，不仅会输出错误信息，而且 exit code 将被设为 1（一般 exit code 不为 0 则表示执行出现错误）
 
 4、新建index.ts文件：
-```
+
+```js
 var myName = 'Tom';
 console.log(`My name is ${myNane}`);
 console.log(`My name is ${myName.toStrng()}`);
 type Foo = {};
 ```
+
 5、在命令行输入npx eslint index.ts，如下可以看到报错信息以及可修复项
-```
+
+```cmd
   1:1   error  Unexpected var, use let or const instead  no-var
   2:27  error  'myNane' is not defined                   no-undef
   4:6   error  Use an `interface` instead of a `type`    @typescript-eslint/consistent-type-definitions
@@ -116,10 +123,13 @@ type Foo = {};
 ✖ 3 problems (3 errors, 0 warnings)
   2 errors and 0 warnings potentially fixable with the `--fix` option.
 ```
+
 #### 脚本命令检查整个项目
+
 1、根目录新建一个src文件夹，将我们的index.js和index.ts放进去
 2、在package.json中的scripts新增：
-```
+
+```js
 {
     "scripts": {
         // 因为eslint不是全局安装的，所以要使用npx
@@ -128,14 +138,17 @@ type Foo = {};
     }
 }
 ```
-3、然后npm run lint就可以看到src下所有指定后缀文件的报错信息
+
+3、然后`npm run lint`就可以看到`src`下所有指定后缀文件的报错信息
 
 ### 推荐使用 AlloyTeam 的配置
+
 上面手把手完成了ESLint的配置过程
 有一定经验的推荐直接使用`AlloyTeam`实现可自定义拓展的`ESLint`规则
 `AlloyTeam/eslint-config-alloy`已经帮我们集成了各种技术栈
 1、安装技术栈相关依赖
-```
+
+```cmd
 // Eslint
 npm install --save-dev eslint babel-eslint eslint-config-alloy
 // React
@@ -147,8 +160,10 @@ npm install --save-dev eslint typescript @typescript-eslint/parser @typescript-e
 // TypeScript React
 npm install --save-dev eslint typescript @typescript-eslint/parser @typescript-eslint/eslint-plugin eslint-plugin-react eslint-config-alloy
 ```
+
 2、配置.eslintrc.js文件
-```
+
+```js
 /* .eslintrc.js */
 module.exports = {
     extends: [
@@ -176,15 +191,18 @@ module.exports = {
     }
 };
 ```
+
 3、接下来就可以直接用eslint命令检查文件了
 4、这样就引入了alloy团队的lint规则了，然后可以用rules覆盖你不爽的规则，直接采用开源规则是为了避免重复造轮子，你也可以选择别的团队，或者自己定义一套
 
 ### VSCode 集成 ESLint 检查
+
 >在编辑器中集成 ESLint 检查，可以在开发过程中就发现错误，甚至可以在保存时自动修复错误，极大的增加了开发效率
 
 1、先安装 ESLint 插件，打开 VSCode 点击「扩展」按钮，搜索 ESLint，然后安装即可
 2、在「文件 => 首选项 => 设置 => 工作区」中（也可以在项目根目录下创建一个配置文件 .vscode/settings.json），添加以下配置：
-```
+
+```js
 {
     // VSCode 中的 ESLint 插件默认是不会检查 `.vue`、`.ts` 或 `.tsx` 后缀的
     "eslint.validate": [
@@ -210,11 +228,14 @@ AlloyTeam 推荐用 Prettier 管理格式化相关的规则，用 ESLint 来检�
 
 配置 Prettier
 1、安装 Prettier,并在vscode安装prettier
-```
+
+```cmd
 npm install --save-dev prettier
 ```
+
 2、配置 .prettierrc.js 仅供参考：
-```
+
+```cmd
 // .prettierrc.js
 module.exports = {
     // 一行最多 100 字符
@@ -254,18 +275,23 @@ module.exports = {
     endOfLine: 'lf'
 };
 ```
-VSCode 集成 Prettier
+
+### VSCode 集成 Prettier
+
 1、在.vscode/settings.json中添加配置：
-```
+
+```js
 {
     // 保存时自动格式化所有支持文件 javascript/javascriptreact/typescript/typescriptreact/json/graphql
     "editor.formatOnSave": true,
     "editor.defaultFormatter": "esbenp.prettier-vscode",
 }
 ```
+
 2、这时我们保存文件的时候，已经可以自动格式化了
 3、也可以指定格式化文件类型：
-```
+
+```js
 {
     // Set the default
     "editor.formatOnSave": false,
@@ -276,21 +302,29 @@ VSCode 集成 Prettier
     }
 }
 ```
+
 ### 继续集成 Stylelint
+
 > 顾名思义，Stylelint帮我们解决类css文件样式问题
 
 Stylelint 规则分为三个类别
+
 + Possible errors：可以使用stylelint-config-recommended启用这些规则
 + Stylistic issues：stylelint-config-standard拓展了Possible errors，并启用此类的规则
 + Limit language features：其他规则，如果有需要，可以在rules里面配置
 详尽的配置规则
+
 #### Stylelint 配置
+
 1、安装依赖,并在插件市场安装stylelint插件
-```
+
+```cmd
 npm install --save-dev stylelint stylelint-config-standard stylelint-order
 ```
+
 2、在项目根目录中创建一个.stylelintrc.js配置文件：
-```
+
+```cmd
 module.exports = {
     extends: [
         'stylelint-config-standard',
@@ -301,17 +335,23 @@ module.exports = {
     }
 };
 ```
+
 `stylelint-config-standard`是`stylelint`的推荐配置
 `stylelint-order`是 `css`属性排序插件
 3、`npx stylelint "**/*.css"` 尝试检查 css 文件
 4、`npx stylelint "**/*.css" fix` 自动修复css文件
+
 #### 支持 SCSS
+
 1、安装依赖
-```
+
+```cmd
 npm install --save-dev stylelint-config-sass-guidelines stylelint-scss
 ```
+
 2、调整.stylelintrc.js配置文件：
-```
+
+```js
 module.exports = {
     extends: [
         'stylelint-config-standard',
@@ -323,11 +363,14 @@ module.exports = {
     }
 };
 ```
+
 3、更多配置及插件
 
 ### VSCode 集成 Stylelint
+
 1、在.vscode/settings.json中添加配置：
-```
+
+```js
 {
     "editor.codeActionsOnSave": {
          // 开启保存自动修复所有stylelint可修复的选项
@@ -335,9 +378,10 @@ module.exports = {
     },
 }
 ```
-2、这时我们保存文件的时候，Stylelint已经可以自动修复，但是我们上面让`Prettier`负责了所有文件的格式化，因此可能会导致冲突，倒腾了好久VSCode配置项，效果并不好，比如去除了 `css` 等文件的格式化，到`.vue`内联<style>依然有问题
 
-```
+2、这时我们保存文件的时候，Stylelint已经可以自动修复，但是我们上面让`Prettier`负责了所有文件的格式化，因此可能会导致冲突，倒腾了好久VSCode配置项，效果并不好，比如去除了 `css` 等文件的格式化，到`.vue`内联`style`依然有问题
+
+```js
 {
     // 去除其他插件
     "css.validate": false,
@@ -358,10 +402,12 @@ module.exports = {
     },
 }
 ```
+
 3、如上还是会有问题，换个思路，让Stylelint禁用所有与Prettiern有关的规则，很符合我们整篇文章「各司其职」的思想
 4、安装依赖npm install \--save-dev stylelint-config-prettier
 5、调整.stylelintrc.js配置文件：
-```
+
+```js
 module.exports = {
     extends: [
         'stylelint-config-standard',
@@ -374,13 +420,17 @@ module.exports = {
     }
 };
 ```
+
 6、至此，我们让Prettiern负责格式化，让Stylelint检查样式，让ESLint检查语法逻辑，完成了整个前端 Lint 工作流
 
 ### Git 代码预检
+
 + 上面我们配置了ESLint、Prettier、Stylelint集成了VSCode插件，实现了错误提示和保存自动修复
 + 然而自动修复的只是小部分，如果团队成员不按规范，依然可以将不规范的代码推送至远程代码库
 + 我们通过Git 代码预检，一定程度防止不规范的代码被提交
+  
 #### 实现过程
+
 1. 待提交的代码
 2. git add 添加到暂存区
 3. 执行 git commit（这时进行代码预检）
@@ -388,10 +438,13 @@ module.exports = {
 5. lint-staged 取得所有被提交的文件依次执行写好的任务
 6. 如果有错误（没通过ESlint检查）则停止任务，等待下次commit，同时打印错误信息
 7. 成功提交后，git push推送到远程库
+
 #### 什么是 git hook
+
 `git hook`就是`.git`文件夹的`hooks`下的一些钩子函数，特定时机他们将被调用
 查看所有 git 钩子函数：
-```
+
+```cmd
 cd .git/hooks
 ls -l
 // 打印如下：
@@ -408,18 +461,25 @@ total 96
 -rwxr-xr-x  1 zzc  staff  1492 10 21  2019 prepare-commit-msg.sample
 -rwxr-xr-x  1 zzc  staff  3610 10 21  2019 update.sample
 ```
+
 + `.sample`为各个钩子的案例脚本，可以把`sample`去掉，直接编写`shell`脚本来执行。
 + 而前端可以用插件husky与pre-commit，来使钩子生效。
+  
 #### husky 注册 git hook
+
 > Requires Node >= 10 and Git >= 2.13.0.
 
 + `husky`新老版本的配置方式和使用变化较大，老版本请自行升级，详见 husky
+  
 1、安装 husky
-```
+
+```cmd
 npm install husky --save-dev
 ```
+
 2、编辑 package.json 文件：
-```
+
+```js
 {
     "husky": {
         "hooks": {
@@ -428,29 +488,36 @@ npm install husky --save-dev
     },
 }
 ```
+
 3、尝试 `git commit` 提交，就会先执行`eslint src/**/*.js`，代码没有问题才会被真正提交
 4、这样每次提交代码，eslint都会检查所有文件，如果报错过多，一定会崩溃
 
 #### lint-staged 只 Lint 改动代码
+
 > lint-staged requires Node.js version 10.13.0 or later.
 
 + v10.0.0 以后对原始暂存文件的任何新修改都将自动添加到提交中。如果您的任务以前包含一个git add步骤，请删除此步骤，同时运行多个git操作通常会导致错误，详见 lint-staged
 
 1、安装 lint-staged
-```
+
+```cmd
 npm install lint-staged --save-dev
 ```
+
 2、新增 package.json 配置：
-```
+
+```js
 {
     "lint-staged": {
         "src/**/*.js": "eslint"
     }
 }
 ```
+
 3、如此husky只负责注册git hook，后续操作交给lint-staged，只对改动的文件执行任务，而且可以很方便
 地配置多条命令：
-```
+
+```js
 {
     "husky": {
         "hooks": {
@@ -462,16 +529,20 @@ npm install lint-staged --save-dev
     }
 }
 ```
+
 4、如上，我们提交代码之前，程序会自动修复`eslint`配置，格式化`prettier`配置
 
 ### 几点建议
+
 + 建议代码提交只做检查和测试，拦截问题代码比较好，还是在保存时，自动修复`eslint、prettier`配置，而且大部分还需要手动修复才行
 + 实在紧急，也可通过`git commit -m -n` "跳过代码代码预检"跳过检查，慎用
 + 和构建有关的包建议使用`--save-dev`安装在项目内部
 + 使用`VSCode`打开项目，`path`不要嵌套过深，可能导致`Lint`工具失效
 + 老版本`husky lint-staged`配置都放在`package.json`中，现在`eslint prettier husky lint-staged`都支持多种后缀配置文件，建议采用`.js`统一格式，也方便拓展：
+  
 #### 统一配置文件格式
-```
+
+```js
 // .eslintrc.js
 module.exports = {
     extends: [
@@ -508,8 +579,13 @@ module.exports = {
         // ...
     }
 };
-拓展示例
-.huskyrc.js
+```
+
+### 拓展示例
+
++ `.huskyrc.js`
+
+```js
 // 数组方式配置多条命令
 const tasks = arr => arr.join(' && ')
 module.exports = {
@@ -520,7 +596,11 @@ module.exports = {
     ])
   }
 }
-.lintstagedrc.js
+```
+
++ `.lintstagedrc.js`
+
+```js
 module.exports = {
     // 如果超过10个暂存文件，则在整个存储库上运行eslint
     '**/*.js?(x)': (filenames) =>
@@ -531,4 +611,5 @@ module.exports = {
     '**/*.ts?(x)': () => 'tsc -p tsconfig.json --noEmit'
 }
 ```
+
 转自[https://segmentfault.com/a/1190000022881634](https://segmentfault.com/a/1190000022881634)
