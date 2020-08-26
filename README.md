@@ -235,7 +235,7 @@ npm install --save-dev prettier
 
 2、配置 .prettierrc.js 仅供参考：
 
-```cmd
+```js
 // .prettierrc.js
 module.exports = {
     // 一行最多 100 字符
@@ -324,7 +324,7 @@ npm install --save-dev stylelint stylelint-config-standard stylelint-order
 
 2、在项目根目录中创建一个.stylelintrc.js配置文件：
 
-```cmd
+```js
 module.exports = {
     extends: [
         'stylelint-config-standard',
